@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Burger from '../../components/Burger/Burger';
 import { INGREDIENT_PRICE, INGREDIENT_TYPE } from '../../components/Burger/constants';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Modal from '../../components/UI/Modal/Modal';
 
 
 export default class BurgerBuilder extends Component {
@@ -14,15 +16,10 @@ export default class BurgerBuilder extends Component {
         },
         totalPrice: 4,
         purchasable: false,
+        showSummary: false,
     }
 
-    constructor(props) {
-        super(props);
-        this.addIngredients = this.addIngredients.bind(this);
-        this.removeIngredients = this.removeIngredients.bind(this);
-    }
-
-    addIngredients(type) {
+    addIngredients = (type) => {
         const newState = {
             ingredients: {
                 ...this.state.ingredients,
@@ -40,7 +37,7 @@ export default class BurgerBuilder extends Component {
         this.setState({ purchasable: ingredientsCount > 0 })
     }
 
-    removeIngredients(type) {
+    removeIngredients = (type) => {
         let newState = {
             ingredients: {
                 ...this.state.ingredients,
@@ -53,22 +50,39 @@ export default class BurgerBuilder extends Component {
         this.setState({ ...newState });
         this.updatePurchasable(newState.ingredients);
     }
+
+    showSummaryHandler = () => {
+        this.setState({ showSummary: true });
+    }
+
+    hideSummaryHandler = () => {
+        this.setState({ showSummary: false });
+    }
+
+
     render() {
         let buttonDisabledState = { ...this.state.ingredients };
         for (let btn in buttonDisabledState) {
             buttonDisabledState[btn] = buttonDisabledState[btn] === 0;
         }
 
-
         return (
             <>
                 <Burger ingredients={this.state.ingredients} />
-                <BuildControls addIngredientsHandler={this.addIngredients}
+                <BuildControls
+                    addIngredientsHandler={this.addIngredients}
                     removeIngredientsHandler={this.removeIngredients}
                     disableBtns={buttonDisabledState}
                     totalPrice={this.state.totalPrice}
                     purchasable={this.state.purchasable}
+                    showSummaryFn={this.showSummaryHandler}
                 />
+                <Modal show={this.state.showSummary} closeModalFn={this.hideSummaryHandler}>
+                    <OrderSummary ingredients={this.state.ingredients}
+                        placeOrderFn={this.hideSummaryHandler}
+                        cancelOrderFn={this.hideSummaryHandler}
+                    />
+                </Modal>
             </>
         )
     }

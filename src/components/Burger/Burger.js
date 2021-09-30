@@ -26,9 +26,9 @@ export default function burger({ ingredients }) {
     }
     return (
         <div className={classes.Burger}>
-            <BurgerIngredient type={INGREDIENT_TYPE['bread-top']} />
+            <BurgerIngredient key='bread-top' type={INGREDIENT_TYPE['bread-top']} />
             {buildIngredients(ingredients)}
-            <BurgerIngredient type={INGREDIENT_TYPE['bread-bottom']} />
+            <BurgerIngredient key='bread-bottom' type={INGREDIENT_TYPE['bread-bottom']} />
         </div>
     )
 }
